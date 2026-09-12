@@ -1,0 +1,1 @@
+import{Z as s,$ as i,a0 as r}from"./C-vtUht0.js";import{u as o}from"./CwrA-YNL.js";const l=s(async e=>{let t,a;if(!(!e.path.startsWith("/owner")||e.path==="/owner/login"))try{if(!([t,a]=i(()=>$fetch("/api/auth/check")),t=await t,a(),t).isAuthenticated)return r("/owner/login");const n=o("isAuthenticated",()=>!1);n.value=!0}catch{return r("/owner/login")}});export{l as default};

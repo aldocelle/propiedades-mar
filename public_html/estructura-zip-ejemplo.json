@@ -1,0 +1,39 @@
+{
+  "comment": "Estructura esperada del ZIP para importar propiedades",
+  "structure": {
+    "mi-propiedad.zip": {
+      "datos.json": {
+        "title": "Departamento luminoso en Viña del Mar",
+        "description": "Hermoso departamento con vista al mar, recién renovado.",
+        "address": "Av. Las Palmeras 1234, Depto 502",
+        "city": "Viña del Mar",
+        "price": 450000000,
+        "property_type": "Departamentos",
+        "operation_type": "Venta",
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "area_sq_m": 85,
+        "superficie_util": 75,
+        "estacionamientos": 1,
+        "bodegas_count": 1,
+        "mascotas": "Sí",
+        "amoblado": "Sin amoblar",
+        "amenities": ["ascensor", "gimnasio", "piscina", "area_verde"]
+      },
+      "imagenes/": [
+        "01-portada.jpg",
+        "02-sala.jpg",
+        "03-cocina.jpg",
+        "04-dormitorio.jpg",
+        "05-bano.jpg"
+      ]
+    }
+  },
+  "notas": [
+    "El archivo datos.json es opcional y rellenará automáticamente los campos",
+    "Todos los campos en datos.json son opcionales",
+    "Las imágenes pueden estar en cualquier carpeta dentro del ZIP",
+    "Los nombres de archivo se preservan para la organización",
+    "El sistema soporta: JPG, PNG, WebP, GIF"
+  ]
+}

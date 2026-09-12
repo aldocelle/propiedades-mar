@@ -1,0 +1,138 @@
+# ================================================================
+# Propiedades Mar — configuración Apache
+# ================================================================
+
+# --- Acceso público ----------------------------------------------
+<IfModule mod_authz_core.c>
+  Require all granted
+</IfModule>
+
+<IfModule mod_access_compat.c>
+  Satisfy Any
+  Order allow,deny
+  Allow from all
+</IfModule>
+
+# --- Proteger archivos sensibles ---------------------------------
+<FilesMatch "^(db_config|db_credentials|smtp_config)\\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule mod_access_compat.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Documentación, esquemas SQL, credenciales y respaldos.
+<FilesMatch "\.(md|sql|bak|log|scss|ejemplo)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule mod_access_compat.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Archivos que empiezan con punto.
+<FilesMatch "^\\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule mod_access_compat.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# --- Ejecutar PHP para archivos .php ----------------------------
+<IfModule mod_dir.c>
+  DirectoryIndex index.html index.php router.php
+</IfModule>
+
+<IfModule mod_php.c>
+  <FilesMatch "\.php$">
+    # PHP se ejecuta solo si el módulo está disponible;
+    # si no, Apache sirve el código fuente (peligroso).
+    # En Ferozo esto no debería ocurrir porque PHP está habilitado.
+  </FilesMatch>
+</IfModule>
+
+# --- SPA Fallback (Nuxt 3) --------------------------------------
+# Si la petición no corresponde a un archivo o directorio real,
+# servir el index.html para que el routing client-side del Nuxt
+# tome el control. Esto permite que rutas como /properties/ y
+# /properties/:slug/ carguen la aplicación correctamente.
+#
+# Excepciones: no redirigir las rutas de la API porque ellas
+# se manejan directamente por PHP (router.php las proxyea o
+# los archivos .php los procesan directamente).
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Canonicalización: www → dominio raíz (301). Debe ir primero:
+  # las URLs de imagen guardadas en la BD son https://propiedadesmar.cl/...
+  # y el diseño/SEO asumen el apex; evita contenido duplicado y
+  # bloqueos cross-origin de imágenes bajo www.
+  RewriteCond %{HTTP_HOST} ^www\.propiedadesmar\.cl$ [NC]
+  RewriteRule ^ https://propiedadesmar.cl%{REQUEST_URI} [R=301,L,QSA]
+
+  # Redirigir /properties/ al home (/) — la página home ya muestra
+  # el listado completo de propiedades con filtros. La ruta /properties/
+  # no está implementada en el router del Nuxt (dan 404).
+  # Usamos RedirectMatch para no afectar /properties/:slug/
+  RedirectMatch 301 ^/properties/?$ /
+
+  # No reescribir peticiones a la API (son manejadas por PHP)
+  RewriteCond %{REQUEST_URI} ^/api/ [OR]
+  # No reescribir peticiones a archivos reales
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Redirigir todo lo demás al index.html (SPA fallback)
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Alternativa si mod_rewrite no está disponible: FallbackResource
+# (requiere Apache 2.4.16+ y sin .htaccess anulando la directiva)
+<IfModule !mod_rewrite.c>
+  FallbackResource /index.html
+</IfModule>
+
+# --- Codificación ------------------------------------------------
+<IfModule mod_mime.c>
+  AddDefaultCharset UTF-8
+  AddCharset UTF-8 .html .css .js .json .xml .svg
+  AddType image/svg+xml .svg
+</IfModule>
+
+# --- Compresión --------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml image/svg+xml
+</IfModule>
+
+# --- Caché -------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                "access plus 1 week"
+  ExpiresByType application/javascript  "access plus 1 week"
+  ExpiresByType image/svg+xml           "access plus 1 month"
+  ExpiresByType text/html               "access plus 0 seconds"
+</IfModule>
+
+# --- Cabeceras de seguridad -------------------------------------
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com; form-action 'self' https://formspree.io; frame-src 'self' https://www.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'"
+</IfModule>
+
+# --- Páginas de error -------------------------------------------
+ErrorDocument 404 /index.html

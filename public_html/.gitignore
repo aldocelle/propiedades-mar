@@ -1,0 +1,7 @@
+.vercel
+.vscode/ftp-sync.json
+.vscode/upload.json
+db_credentials.php
+smtp_config.php
+*.zip
+.DS_Store

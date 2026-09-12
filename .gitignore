@@ -1,0 +1,41 @@
+# Archivo de conversación — CONFIDENCIAL, nunca subir
+CONVERSACION_BACKUP.md
+
+# Credenciales y configuración sensible de DB
+db_credentials.php
+db_config.php
+smtp_config.php
+
+# Base de datos SQLite (real)
+propiedadesmar.db
+**/propiedadesmar.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads (imágenes subidas al sitio) — ya están en el hosting
+uploads/
+public_html/uploads/
+
+# Backups / zip grandes / carpetas viejas
+*.zip
+public_html.zip
+expresswebsite-public_html.zip
+public_html 2/
+por publicar/
+
+# Entorno de desarrollo local
+local-dev/
+node_modules/
+.env
+.env.*
+*.creds
+
+# Sistema / IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Caché de Nuxt/Vite
+.nuxt/
+.output/

@@ -1,0 +1,1 @@
+import{Z as n,$ as r,a0 as i}from"./C-vtUht0.js";const s=n(async a=>{let t,e;if(a.path!=="/admin/login"&&a.path.startsWith("/admin"))try{if(!([t,e]=r(()=>$fetch("/api/auth/check")),t=await t,e(),t)?.authenticated)return i("/admin/login")}catch{return i("/admin/login")}});export{s as default};

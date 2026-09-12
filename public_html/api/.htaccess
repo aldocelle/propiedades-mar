@@ -1,0 +1,53 @@
+RewriteEngine On
+
+# Archivos reales (PHP, etc.) se sirven directamente sin reescribir
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# ── Auth ────────────────────────────────────────────────────
+RewriteRule ^auth/login$   auth/login.php   [L]
+RewriteRule ^auth/logout$  auth/logout.php  [L]
+RewriteRule ^auth/check$   auth/check.php   [L]
+
+# ── Properties públicas ──────────────────────────────────────
+RewriteRule ^properties$           properties/index.php          [L]
+RewriteRule ^properties/([^/]+)$   properties/slug.php?slug=$1   [QSA,L]
+
+# ── Admin: properties ────────────────────────────────────────
+RewriteRule ^admin/properties$           admin/properties/index.php             [L]
+RewriteRule ^admin/properties/([^/]+)$   admin/properties/property.php?id=$1    [QSA,L]
+
+# ── Admin: images ─────────────────────────────────────────────
+RewriteRule ^admin/images$           admin/images/index.php              [QSA,L]
+# POST → index.php (agregar imagen a propiedad)
+RewriteCond %{REQUEST_METHOD} ^POST$
+RewriteRule ^admin/images/([^/]+)$   admin/images/index.php?propertyId=$1   [QSA,L]
+# PUT/DELETE → image.php (editar/eliminar imagen por imageId)
+RewriteRule ^admin/images/([^/]+)$   admin/images/image.php?imageId=$1      [QSA,L]
+
+# ── Admin: users ─────────────────────────────────────────────
+RewriteRule ^admin/users$           admin/users/index.php           [L]
+RewriteRule ^admin/users/([^/]+)$   admin/users/user.php?id=$1      [QSA,L]
+
+# ── Admin: settings ──────────────────────────────────────────
+RewriteRule ^admin/settings$   admin/settings/index.php   [L]
+
+# ── Admin: check-schema ──────────────────────────────────────
+RewriteRule ^admin/check-schema$   admin/check-schema.php   [L]
+
+# ── Admin: importar ZIP / Dropbox ────────────────────────────
+RewriteRule ^admin/import-zip$        admin/import-zip.php        [L]
+RewriteRule ^admin/download-dropbox$  admin/download-dropbox.php  [L]
+
+# ── Owner ────────────────────────────────────────────────────
+RewriteRule ^owner/properties$           owner/properties/index.php              [L]
+RewriteRule ^owner/properties/([^/]+)$   owner/properties/property.php?id=$1     [QSA,L]
+RewriteRule ^owner/images$               owner/images/index.php                  [QSA,L]
+# POST → index.php (agregar imagen a propiedad)
+RewriteCond %{REQUEST_METHOD} ^POST$
+RewriteRule ^owner/images/([^/]+)$       owner/images/index.php?propertyId=$1    [QSA,L]
+# PUT/DELETE → image.php (editar/eliminar imagen por imageId)
+RewriteRule ^owner/images/([^/]+)$       owner/images/image.php?imageId=$1       [QSA,L]
+
+# ── Upload ───────────────────────────────────────────────────
+RewriteRule ^upload$   upload.php   [L]
