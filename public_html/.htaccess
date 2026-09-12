@@ -100,10 +100,13 @@
   # /api/auth/*       → api/auth/*.php
   # /api/properties/  → api/properties/index.php
   RewriteRule ^api/upload/?$ api/upload.php [L,QSA]
-  RewriteRule ^api/properties/([^/]+)/?$ api/properties/$1.php [L,QSA]
+  RewriteRule ^api/properties/([^/]+)/?$ api/properties/property.php?id=$1 [L,QSA]
   RewriteRule ^api/properties/?$ api/properties/index.php [L,QSA]
-  RewriteRule ^api/admin/properties/([^/]+)/?$ api/admin/properties/$1.php [L,QSA]
+  RewriteRule ^api/admin/properties/([^/]+)/?$ api/admin/properties/property.php?id=$1 [L,QSA]
   RewriteRule ^api/admin/properties/?$ api/admin/properties/index.php [L,QSA]
+  # POST /api/admin/images/ → agregar imagen (propertyId en body/query)
+  RewriteRule ^api/admin/images/?$ api/admin/images/index.php [L,QSA]
+  # GET/PUT/DELETE /api/admin/images/{imageId}
   RewriteRule ^api/admin/images/([^/]+)/?$ api/admin/images/image.php?imageId=$1 [L,QSA]
   RewriteRule ^api/auth/(.+)$ api/auth/$1.php [L,QSA]
   RewriteRule ^api/owner/(.+)$ api/owner/$1 [L,QSA]
@@ -141,11 +144,12 @@
   ExpiresByType text/html               "access plus 0 seconds"
 </IfModule>
 
-# --- Cabeceras de seguridad -------------------------------------
+# --- Cabeceras de seguridad y contenido -------------------------
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set X-Frame-Options "SAMEORIGIN"
+  Header set Content-Language "es"
   Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com; form-action 'self' https://formspree.io; frame-src 'self' https://www.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'"
 </IfModule>
 
