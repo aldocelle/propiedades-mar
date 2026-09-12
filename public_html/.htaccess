@@ -86,12 +86,27 @@
   # Usamos RedirectMatch para no afectar /properties/:slug/
   RedirectMatch 301 ^/properties/?$ /
 
-  # No reescribir peticiones a la API (son manejadas por PHP)
+    # No reescribir peticiones a la API (son manejadas por PHP)
   RewriteCond %{REQUEST_URI} ^/api/ [OR]
+  # Archivos .php dentro de /api/ se sirven directamente (no pasar por router.php)
+  RewriteRule ^api/[^/]+\.php(/.*)?$ - [L]
   # No reescribir peticiones a archivos reales
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
+
+  # Mapear rutas de API REST (/api/recursos) al handler PHP correspondiente
+  # /api/upload       → api/upload.php
+  # /api/auth/*       → api/auth/*.php
+  # /api/properties/  → api/properties/index.php
+  RewriteRule ^api/upload/?$ api/upload.php [L,QSA]
+  RewriteRule ^api/properties/([^/]+)/?$ api/properties/$1.php [L,QSA]
+  RewriteRule ^api/properties/?$ api/properties/index.php [L,QSA]
+  RewriteRule ^api/admin/properties/([^/]+)/?$ api/admin/properties/$1.php [L,QSA]
+  RewriteRule ^api/admin/properties/?$ api/admin/properties/index.php [L,QSA]
+  RewriteRule ^api/admin/images/([^/]+)/?$ api/admin/images/index.php [L,QSA]
+  RewriteRule ^api/auth/(.+)$ api/auth/$1.php [L,QSA]
+  RewriteRule ^api/owner/(.+)$ api/owner/$1 [L,QSA]
 
   # Redirigir todo lo demás al index.html (SPA fallback)
   RewriteRule ^ index.html [L]

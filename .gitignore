@@ -16,6 +16,7 @@ propiedadesmar.db
 # Uploads (imágenes subidas al sitio) — ya están en el hosting
 uploads/
 public_html/uploads/
+public_html/subir/avisos/
 
 # Backups / zip grandes / carpetas viejas
 *.zip
