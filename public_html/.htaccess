@@ -104,7 +104,7 @@
   RewriteRule ^api/properties/?$ api/properties/index.php [L,QSA]
   RewriteRule ^api/admin/properties/([^/]+)/?$ api/admin/properties/$1.php [L,QSA]
   RewriteRule ^api/admin/properties/?$ api/admin/properties/index.php [L,QSA]
-  RewriteRule ^api/admin/images/([^/]+)/?$ api/admin/images/index.php [L,QSA]
+  RewriteRule ^api/admin/images/([^/]+)/?$ api/admin/images/image.php?imageId=$1 [L,QSA]
   RewriteRule ^api/auth/(.+)$ api/auth/$1.php [L,QSA]
   RewriteRule ^api/owner/(.+)$ api/owner/$1 [L,QSA]
 
